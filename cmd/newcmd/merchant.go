@@ -31,6 +31,8 @@ func createMerchant(args []string) {
 		merchantDetails types.MerchantDetails
 	)
 
+	// Road block ahead, I mean validations
+
 	if len(args) != 3 {
 		fmt.Println(constants.CreateMerchantInvalidParamsErr)
 		return
@@ -39,6 +41,11 @@ func createMerchant(args []string) {
 	perc, err := strconv.ParseFloat(args[2], 64)
 	if err != nil {
 		fmt.Println(constants.CreateMerchantPercErr)
+		return
+	}
+
+	if perc <= 0 {
+		fmt.Println(constants.UpdateMerchantInvalidDiscountErr)
 		return
 	}
 

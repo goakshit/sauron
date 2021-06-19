@@ -19,6 +19,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/goakshit/sauron/cmd/newcmd"
+	"github.com/goakshit/sauron/cmd/updatecmd"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -36,4 +37,6 @@ func Execute() {
 func init() {
 	// Add new command
 	rootCmd.AddCommand(newcmd.GetNewCmd())
+	// Add update command
+	rootCmd.AddCommand(updatecmd.GetUpdateCmd())
 }
