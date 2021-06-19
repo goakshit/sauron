@@ -71,4 +71,10 @@ const (
 	CreatePaybackGetDueAmountErr = "Failed to get user's due amount. Try again after sometime."
 
 	CreatepaybackNoDueAmountErr = "There is no due amount for this user."
+
+	// Report
+
+	ReportUACLGetUsersErr = "Failed to fetch users at credit limit. Try again after sometime."
+
+	ReportUACLNoRecordsErr = "There are no users at credit limit."
 )

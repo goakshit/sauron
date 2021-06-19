@@ -20,6 +20,7 @@ import (
 
 	"github.com/goakshit/sauron/cmd/newcmd"
 	"github.com/goakshit/sauron/cmd/paybackcmd"
+	"github.com/goakshit/sauron/cmd/reportcmd"
 	"github.com/goakshit/sauron/cmd/updatecmd"
 )
 
@@ -41,5 +42,6 @@ func init() {
 		newcmd.GetNewCmd(),
 		updatecmd.GetUpdateCmd(),
 		paybackcmd.GetPaybackCmd(),
+		reportcmd.GetReportCmd(),
 	)
 }
