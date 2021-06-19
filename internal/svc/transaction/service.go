@@ -5,9 +5,7 @@ import (
 	"errors"
 
 	"github.com/goakshit/sauron/internal/constants"
-	"github.com/goakshit/sauron/internal/persistence"
 	"github.com/goakshit/sauron/internal/types"
-	"gorm.io/gorm"
 )
 
 type Service interface {
@@ -15,12 +13,12 @@ type Service interface {
 }
 
 type service struct {
-	db persistence.DBIface
+	r Repository
 }
 
-func NewTxnService(db persistence.DBIface) Service {
+func NewTxnService(repo Repository) Service {
 	return &service{
-		db: db,
+		r: repo,
 	}
 }
 
@@ -31,26 +29,21 @@ func (s *service) CreateTransaction(ctx context.Context, data types.TxnDetails) 
 	var (
 		userDetails     types.UserDetails
 		merchantDetails types.MerchantDetails
+		err             error
 	)
 
 	if data.Amount <= 0 {
 		return errors.New(constants.CreateTxnInvalidAmountErr)
 	}
 
-	err := s.db.Table("user").Where("name = ?", data.UserName).First(&userDetails).Error()
+	userDetails, err = s.r.GetUserDetails(ctx, data.UserName)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return errors.New(constants.CreateTxnUserDoesNotExistErr)
-		}
-		return errors.New(constants.CreateTxnGetUserCreditLimitErr)
+		return err
 	}
 
-	err = s.db.Table("merchant").Where("name = ?", data.MerchantName).First(&merchantDetails).Error()
+	merchantDetails, err = s.r.GetMerchantDetails(ctx, data.MerchantName)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return errors.New(constants.CreateTxnMerchantNotFoundErr)
-		}
-		return errors.New(constants.CreateTxnGetMerchantErr)
+		return err
 	}
 
 	// If txn amount is greater than limit - dueAmount, throw error
@@ -61,10 +54,9 @@ func (s *service) CreateTransaction(ctx context.Context, data types.TxnDetails) 
 	// Set current merchant discount percent in txn
 	data.MerchantPerc = merchantDetails.Perc
 
-	if err = s.db.Table("transaction").Create(&data).Error(); err == nil {
+	if err = s.r.CreateTxn(ctx, data); err == nil {
 		// Update due amount in user table
-		return s.db.Table("user").Where("name = ?", data.UserName).
-			UpdateColumn("due_amount", userDetails.DueAmount+data.Amount).Error()
+		return s.r.UpdateUserDueAmount(ctx, data.UserName, userDetails.DueAmount+data.Amount)
 	}
 	return err
 }

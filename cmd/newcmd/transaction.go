@@ -53,7 +53,8 @@ func createTransaction(args []string) {
 	txnDetails.MerchantName = args[1]
 	txnDetails.Amount = txnAmount
 
-	txnSVC := transaction.NewTxnService(persistence.GetGormClient())
+	txnRepo := transaction.NewRepository(persistence.GetGormClient())
+	txnSVC := transaction.NewTxnService(txnRepo)
 	err = txnSVC.CreateTransaction(context.Background(), txnDetails)
 	if err != nil {
 		fmt.Println(err.Error())
