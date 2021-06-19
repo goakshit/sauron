@@ -87,4 +87,6 @@ const (
 	ReportUserDuesGetUserDueErr = "Failed to fetch user with pending dues. Try again after sometime."
 
 	ReportInvalidParamErr = "Invalid number of params passed"
+
+	ReportDiscountGetTxnErr = "Failed to fetch transactions for this merchant. Try again later."
 )

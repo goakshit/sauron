@@ -14,6 +14,7 @@ type Service interface {
 	GetUsersAtCreditLimit(ctx context.Context) ([]string, error)
 	GetUserDues(ctx context.Context, name string) (float64, error)
 	GetTotalDues(ctx context.Context) ([]types.ReportUserDues, error)
+	GetMerchantDiscount(ctx context.Context, name string) (float64, error)
 }
 
 type service struct {
@@ -57,4 +58,22 @@ func (s *service) GetUserDues(ctx context.Context, name string) (float64, error)
 		return 0, errors.New(constants.ReportUserDuesGetUserDueErr)
 	}
 	return user.DueAmount, nil
+}
+
+func (s *service) GetMerchantDiscount(ctx context.Context, name string) (float64, error) {
+
+	txns := []types.ReportMerchantTxn{}
+	err := s.db.Table("transaction").Where("merchant_name = ?", name).Find(&txns).Error()
+	if err != nil {
+		return 0, errors.New(constants.ReportDiscountGetTxnErr)
+	}
+	if len(txns) == 0 {
+		return 0, nil
+	}
+	var result float64
+	for _, txn := range txns {
+		discount := (txn.MerchantPerc * txn.Amount) / 100
+		result += discount
+	}
+	return result, nil
 }

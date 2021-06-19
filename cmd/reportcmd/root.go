@@ -26,5 +26,6 @@ func addSubCmd() {
 		getUsersAtCreditLimitCmd(),
 		getUsersDuesCmd(),
 		getUserDueCmd(),
+		getMerchantDiscountCmd(),
 	)
 }

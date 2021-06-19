@@ -31,3 +31,8 @@ type ReportUserDues struct {
 	Name      string  `json:"name"`
 	DueAmount float64 `json:"due_amount"`
 }
+
+type ReportMerchantTxn struct {
+	Amount       float64 `json:"amount"`
+	MerchantPerc float64 `json:"merchant_perc"`
+}
