@@ -12,6 +12,8 @@ const (
 
 	CreateMerchantDuplicateEmailErr = "Duplicate merchant email passed. Kindly pass a unique email"
 
+	CreateMerchantInvalidDiscountErr = "Invalid discount passed for create merchant call."
+
 	// Update Merchant
 
 	UpdateMerchantInvalidDiscountErr = "Invalid discount passed for update."
