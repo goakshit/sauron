@@ -81,4 +81,10 @@ const (
 	ReportUserDuesGetUsersErr = "Failed to fetch users with pending dues. Try again after sometime."
 
 	ReportUserDuesNoRecordsErr = "There are no users with pending dues."
+
+	ReportUserDuesUserNotFoundErr = "User with id passed, not found"
+
+	ReportUserDuesGetUserDueErr = "Failed to fetch user with pending dues. Try again after sometime."
+
+	ReportInvalidParamErr = "Invalid number of params passed"
 )

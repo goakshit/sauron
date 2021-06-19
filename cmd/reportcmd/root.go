@@ -25,5 +25,6 @@ func addSubCmd() {
 	reportCmd.AddCommand(
 		getUsersAtCreditLimitCmd(),
 		getUsersDuesCmd(),
+		getUserDueCmd(),
 	)
 }

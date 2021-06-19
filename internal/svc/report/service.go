@@ -7,10 +7,12 @@ import (
 	"github.com/goakshit/sauron/internal/constants"
 	"github.com/goakshit/sauron/internal/persistence"
 	"github.com/goakshit/sauron/internal/types"
+	"gorm.io/gorm"
 )
 
 type Service interface {
 	GetUsersAtCreditLimit(ctx context.Context) ([]string, error)
+	GetUserDues(ctx context.Context, name string) (float64, error)
 	GetTotalDues(ctx context.Context) ([]types.ReportUserDues, error)
 }
 
@@ -42,4 +44,17 @@ func (s *service) GetTotalDues(ctx context.Context) ([]types.ReportUserDues, err
 		return users, errors.New(constants.ReportUserDuesGetUsersErr)
 	}
 	return users, nil
+}
+
+func (s *service) GetUserDues(ctx context.Context, name string) (float64, error) {
+
+	user := types.ReportUserDues{}
+	err := s.db.Table("user").Where("name = ?", name).First(&user).Error()
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return 0, errors.New(constants.ReportUserDuesUserNotFoundErr)
+		}
+		return 0, errors.New(constants.ReportUserDuesGetUserDueErr)
+	}
+	return user.DueAmount, nil
 }
