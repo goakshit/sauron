@@ -17,4 +17,14 @@ CREATE TABLE IF NOT EXISTS "user" (
     CONSTRAINT "user_email_unique" UNIQUE ("email")
 );
 
+CREATE TABLE IF NOT EXISTS "transaction" (
+    "id" SERIAL,
+    "user_name" TEXT,
+    "merchant_name" TEXT, 
+    "amount" FLOAT,
+    CONSTRAINT "txn_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "fk_user" FOREIGN KEY(user_name) REFERENCES "user"(name),
+    CONSTRAINT "fk_merchant" FOREIGN KEY(merchant_name) REFERENCES "merchant"(name)
+);
+
 COMMIT;

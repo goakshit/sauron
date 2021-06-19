@@ -12,3 +12,10 @@ type UserDetails struct {
 	DueAmount   float64 `json:"due_amount"`
 	CreditLimit float64 `json:"credit_limit"`
 }
+
+type TxnDetails struct {
+	ID           int     `json:"id" gorm:"primaryKey"`
+	UserName     string  `json:"user_name"`
+	MerchantName string  `json:"merchant_name"`
+	Amount       float64 `json:"amount"`
+}
