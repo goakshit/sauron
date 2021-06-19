@@ -27,4 +27,12 @@ CREATE TABLE IF NOT EXISTS "transaction" (
     CONSTRAINT "fk_merchant" FOREIGN KEY(merchant_name) REFERENCES "merchant"(name)
 );
 
+CREATE TABLE IF NOT EXISTS "payback" (
+    "id" SERIAL,
+    "user_name" TEXT,
+    "amount" FLOAT,
+    CONSTRAINT "payback_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "fk_payback_user" FOREIGN KEY(user_name) REFERENCES "user"(name)
+);
+
 COMMIT;

@@ -56,14 +56,7 @@ func createTransaction(args []string) {
 	txnSVC := transaction.NewTxnService(persistence.GetGormClient())
 	err = txnSVC.CreateTransaction(context.Background(), txnDetails)
 	if err != nil {
-		switch err.Error() {
-		case "ERROR: duplicate key value violates unique constraint \"user_pkey\" (SQLSTATE 23505)":
-			fmt.Println(constants.CreateUserDuplicateIDErr)
-		case "ERROR: duplicate key value violates unique constraint \"user_email_unique\" (SQLSTATE 23505)":
-			fmt.Println(constants.CreateUserDuplicateEmailErr)
-		default:
-			fmt.Println(err.Error())
-		}
+		fmt.Println(err.Error())
 		return
 	}
 	fmt.Println("Successfully added new transaction")

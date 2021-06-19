@@ -19,6 +19,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/goakshit/sauron/cmd/newcmd"
+	"github.com/goakshit/sauron/cmd/paybackcmd"
 	"github.com/goakshit/sauron/cmd/updatecmd"
 )
 
@@ -36,9 +37,9 @@ func Execute() {
 
 func init() {
 
-	// Add new command
-	rootCmd.AddCommand(newcmd.GetNewCmd())
-
-	// Add update command
-	rootCmd.AddCommand(updatecmd.GetUpdateCmd())
+	rootCmd.AddCommand(
+		newcmd.GetNewCmd(),
+		updatecmd.GetUpdateCmd(),
+		paybackcmd.GetPaybackCmd(),
+	)
 }

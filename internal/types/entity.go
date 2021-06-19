@@ -19,3 +19,9 @@ type TxnDetails struct {
 	MerchantName string  `json:"merchant_name"`
 	Amount       float64 `json:"amount"`
 }
+
+type PaybackDetails struct {
+	ID       int     `json:"id" gorm:"primaryKey"`
+	UserName string  `json:"user_name"`
+	Amount   float64 `json:"amount"`
+}

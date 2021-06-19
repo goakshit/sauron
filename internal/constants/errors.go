@@ -40,4 +40,14 @@ const (
 	CreateTxnMerchantNotFoundErr = "Merchant with id passed not found"
 
 	CreateTxnInvalidParamsErr = "Invalid number of params passed for create txn call"
+
+	CreatePaybackInvalidAmountErr = "The payback amount is invalid(or unparsable)"
+
+	CreatePaybackInvalidParamsErr = "Invalid number of params passed for create payback call"
+
+	CreatePaybackUserNotFoundErr = "User with id passed not found"
+
+	CreatePaybackGetDueAmountErr = "Failed to get user's due amount. Try again after sometime."
+
+	CreatepaybackNoDueAmountErr = "There is no due amount for this user."
 )
