@@ -16,23 +16,17 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 
-	newCmd "github.com/goakshit/sauron/cmd/new"
+	"github.com/goakshit/sauron/cmd/newcmd"
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "sauron",
-	Short: "A brief description of your application",
-	Long:  `A longer description that spans multiple lines and likely contains examples and usage of using your application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("This is root command")
-	},
+	Short: "Sauron's eye sees everything",
+	Long:  "",
+	// Run:   func(cmd *cobra.Command, args []string) {},
 }
 
 func Execute() {
@@ -41,5 +35,5 @@ func Execute() {
 
 func init() {
 	// Add new command
-	rootCmd.AddCommand(newCmd.GetNewCmd())
+	rootCmd.AddCommand(newcmd.GetNewCmd())
 }

@@ -4,7 +4,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/goakshit/sauron/types"
+	"github.com/goakshit/sauron/internal/types"
 )
 
 func getEnv(key string, defaultValue string) string {
