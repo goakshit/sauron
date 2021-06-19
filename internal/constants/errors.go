@@ -18,4 +18,12 @@ const (
 	UpdateMerchantNameMissingErr = "Name cannot be empty for update merchant discount call"
 
 	UpdateMerchantNotFoundErr = "Merchant with given name not found in database."
+
+	CreateUserInvalidParamsErr = "Invalid number of params passed for create user call"
+
+	CreateUserInvalidCreditLimitErr = "Invalid(or unparsable) credit limit passed for create user call"
+
+	CreateUserDuplicateIDErr = "Duplicate user id passed. Kindly pass a unique id"
+
+	CreateUserDuplicateEmailErr = "Duplicate user email passed. Kindly pass a unique email"
 )

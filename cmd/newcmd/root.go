@@ -1,8 +1,6 @@
 package newcmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
@@ -17,9 +15,7 @@ func init() {
 		Use:   "new",
 		Short: "Creates new instances",
 		Long:  `Allows us to create new instance of users, transactions & merchants`,
-		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("New Cmd")
-		},
+		// Run: func(cmd *cobra.Command, args []string) {},
 	}
 	// Initialises all the sub commands
 	addSubCmd()
@@ -28,4 +24,7 @@ func init() {
 func addSubCmd() {
 	// Adds merchant command
 	newCmd.AddCommand(getMerchantCmd())
+
+	// Adds user command
+	newCmd.AddCommand(getUserCmd())
 }

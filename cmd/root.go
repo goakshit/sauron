@@ -35,8 +35,10 @@ func Execute() {
 }
 
 func init() {
+
 	// Add new command
 	rootCmd.AddCommand(newcmd.GetNewCmd())
+
 	// Add update command
 	rootCmd.AddCommand(updatecmd.GetUpdateCmd())
 }

@@ -44,7 +44,7 @@ func createMerchant(args []string) {
 		return
 	}
 
-	if perc <= 0 {
+	if perc <= 0 || perc > 100 {
 		fmt.Println(constants.UpdateMerchantInvalidDiscountErr)
 		return
 	}
@@ -59,8 +59,10 @@ func createMerchant(args []string) {
 		switch err.Error() {
 		case "ERROR: duplicate key value violates unique constraint \"merchant_pkey\" (SQLSTATE 23505)":
 			fmt.Println(constants.CreateMerchantDuplicateIDErr)
-		case "ERROR: duplicate key value violates unique constraint \"email_unique\" (SQLSTATE 23505)":
+		case "ERROR: duplicate key value violates unique constraint \"merchant_email_unique\" (SQLSTATE 23505)":
 			fmt.Println(constants.CreateMerchantDuplicateEmailErr)
 		}
+		return
 	}
+	fmt.Println("Successfully added merchant with name: " + merchantDetails.Name)
 }

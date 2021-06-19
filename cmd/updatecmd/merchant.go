@@ -53,5 +53,5 @@ func updateMerchantDiscount(args []string) {
 		fmt.Println(err.Error())
 		return
 	}
-	fmt.Printf("Successfully updated the merchant '%s' discount to %f", args[0], perc)
+	fmt.Printf("Successfully updated the merchant '%s' discount to %.2f", args[0], perc)
 }

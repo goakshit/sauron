@@ -35,8 +35,8 @@ func (s *service) UpdateMerchantDiscount(ctx context.Context, name string, disco
 		return errors.New(constants.UpdateMerchantNameMissingErr)
 	}
 
-	// If discount is 0 or less, its an invalid discount
-	if discount <= 0 {
+	// If discount is 0 or less or greater that 100, its an invalid discount
+	if discount <= 0 || discount > 100 {
 		return errors.New(constants.UpdateMerchantInvalidDiscountErr)
 	}
 	res := s.db.Table("merchant").Where("name = ?", name).UpdateColumn("perc", discount)
