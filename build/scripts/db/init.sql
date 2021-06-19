@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS "transaction" (
     "id" SERIAL,
     "user_name" TEXT,
     "merchant_name" TEXT, 
+    "merchant_perc" FLOAT,
     "amount" FLOAT,
     CONSTRAINT "txn_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "fk_user" FOREIGN KEY(user_name) REFERENCES "user"(name),

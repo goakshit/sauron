@@ -17,6 +17,7 @@ type TxnDetails struct {
 	ID           int     `json:"id" gorm:"primaryKey"`
 	UserName     string  `json:"user_name"`
 	MerchantName string  `json:"merchant_name"`
+	MerchantPerc float64 `json:"merchant_perc"`
 	Amount       float64 `json:"amount"`
 }
 
