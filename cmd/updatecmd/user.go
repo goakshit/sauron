@@ -3,9 +3,7 @@ package updatecmd
 import (
 	"context"
 	"fmt"
-	"strconv"
 
-	"github.com/goakshit/sauron/internal/constants"
 	"github.com/goakshit/sauron/internal/persistence"
 	"github.com/goakshit/sauron/internal/svc/user"
 	"github.com/spf13/cobra"
@@ -25,33 +23,13 @@ func getUserCmd() *cobra.Command {
 // updateUserCreditLimit - updates user credit limit from data passed
 func updateUserCreditLimit(args []string) {
 
-	var (
-		err error
-	)
+	userRepo := user.NewRepository(persistence.GetGormClient())
+	userSVC := user.NewUserService(userRepo)
 
-	// Road block ahead, I mean validations
-
-	if len(args) != 2 {
-		fmt.Println(constants.UpdateUserInvalidParamsErr)
-		return
-	}
-
-	creditLimit, err := strconv.ParseFloat(args[1], 64)
-	if err != nil {
-		fmt.Println(constants.UpdateUserInvalidCreditLimitErr)
-		return
-	}
-
-	if creditLimit < 0 {
-		fmt.Println(constants.UpdateUserInvalidCreditLimitErr)
-		return
-	}
-
-	userSVC := user.NewUserService(persistence.GetGormClient())
-	err = userSVC.UpdateUserCreditLimit(context.Background(), args[0], creditLimit)
+	err := userSVC.UpdateUserCreditLimit(context.Background(), args)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	fmt.Printf("Successfully updated the users '%s' credit limit to %.2f", args[0], creditLimit)
+	fmt.Printf("Successfully updated the users '%s' credit limit to %s", args[0], args[1])
 }

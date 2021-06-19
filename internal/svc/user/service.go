@@ -3,48 +3,69 @@ package user
 import (
 	"context"
 	"errors"
+	"strconv"
 
 	"github.com/goakshit/sauron/internal/constants"
-	"github.com/goakshit/sauron/internal/persistence"
 	"github.com/goakshit/sauron/internal/types"
 )
 
 type Service interface {
-	CreateUser(ctx context.Context, data types.UserDetails) error
-	UpdateUserCreditLimit(ctx context.Context, name string, creditLimit float64) error
+	CreateUser(ctx context.Context, args []string) error
+	UpdateUserCreditLimit(ctx context.Context, args []string) error
 }
 
 type service struct {
-	db persistence.DBIface
+	r Repository
 }
 
-func NewUserService(db persistence.DBIface) Service {
+func NewUserService(repo Repository) Service {
 	return &service{
-		db: db,
+		r: repo,
 	}
 }
 
-func (s *service) CreateUser(ctx context.Context, data types.UserDetails) error {
-	return s.db.Table("user").Create(&data).Error()
-}
+func (s *service) CreateUser(ctx context.Context, args []string) error {
 
-func (s *service) UpdateUserCreditLimit(ctx context.Context, name string, creditLimit float64) error {
+	var userDetails types.UserDetails
 
-	// If name is empty, stop right here.
-	if len(name) == 0 {
-		return errors.New(constants.UpdateUserNameMissingErr)
+	if len(args) != 3 {
+		return errors.New(constants.CreateUserInvalidParamsErr)
 	}
 
-	// check for invalid credit limit
+	creditLimit, err := strconv.ParseFloat(args[2], 64)
+	if err != nil {
+		return errors.New(constants.CreateUserInvalidCreditLimitErr)
+	}
+
+	if creditLimit <= 0 {
+		return errors.New(constants.CreateUserInvalidCreditLimitErr)
+	}
+
+	userDetails.Name = args[0]
+	userDetails.Email = args[1]
+	userDetails.CreditLimit = creditLimit
+	return s.r.CreateUser(ctx, userDetails)
+}
+
+func (s *service) UpdateUserCreditLimit(ctx context.Context, args []string) error {
+
+	if len(args) != 2 {
+		return errors.New(constants.UpdateUserInvalidParamsErr)
+	}
+
+	creditLimit, err := strconv.ParseFloat(args[1], 64)
+	if err != nil {
+		return errors.New(constants.UpdateUserInvalidCreditLimitErr)
+	}
+
 	if creditLimit < 0 {
 		return errors.New(constants.UpdateUserInvalidCreditLimitErr)
 	}
-	res := s.db.Table("user").Where("name = ?", name).UpdateColumn("credit_limit", creditLimit)
-	if res.Error() == nil && res.RowsAffected() != 0 {
-		return nil
-	} else if res.Error() == nil {
-		return errors.New(constants.UpdateUserNotFoundErr)
-	} else {
-		return res.Error()
+
+	name := args[0]
+	// If name is empty, return error.
+	if len(name) == 0 {
+		return errors.New(constants.UpdateUserNameMissingErr)
 	}
+	return s.r.UpdateUserCreditLimit(ctx, name, creditLimit)
 }

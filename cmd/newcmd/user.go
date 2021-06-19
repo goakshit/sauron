@@ -3,12 +3,10 @@ package newcmd
 import (
 	"context"
 	"fmt"
-	"strconv"
 
 	"github.com/goakshit/sauron/internal/constants"
 	"github.com/goakshit/sauron/internal/persistence"
 	"github.com/goakshit/sauron/internal/svc/user"
-	"github.com/goakshit/sauron/internal/types"
 	"github.com/spf13/cobra"
 )
 
@@ -26,35 +24,9 @@ func getUserCmd() *cobra.Command {
 // createUser - creates user from data passed
 func createUser(args []string) {
 
-	var (
-		err         error
-		userDetails types.UserDetails
-	)
-
-	// Road block ahead, I mean validations
-
-	if len(args) != 3 {
-		fmt.Println(constants.CreateUserInvalidParamsErr)
-		return
-	}
-
-	creditLimit, err := strconv.ParseFloat(args[2], 64)
-	if err != nil {
-		fmt.Println(constants.CreateUserInvalidCreditLimitErr)
-		return
-	}
-
-	if creditLimit <= 0 {
-		fmt.Println(constants.CreateUserInvalidCreditLimitErr)
-		return
-	}
-
-	userDetails.Name = args[0]
-	userDetails.Email = args[1]
-	userDetails.CreditLimit = creditLimit
-
-	userSVC := user.NewUserService(persistence.GetGormClient())
-	err = userSVC.CreateUser(context.Background(), userDetails)
+	userRepo := user.NewRepository(persistence.GetGormClient())
+	userSVC := user.NewUserService(userRepo)
+	err := userSVC.CreateUser(context.Background(), args)
 	if err != nil {
 		switch err.Error() {
 		case "ERROR: duplicate key value violates unique constraint \"user_pkey\" (SQLSTATE 23505)":
@@ -64,5 +36,5 @@ func createUser(args []string) {
 		}
 		return
 	}
-	fmt.Println("Successfully added user with name: " + userDetails.Name)
+	fmt.Println("Successfully added user with name: " + args[0])
 }

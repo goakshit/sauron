@@ -2,116 +2,99 @@ package user
 
 import (
 	"context"
-	"errors"
 	"testing"
 
 	"github.com/goakshit/sauron/internal/constants"
-	"github.com/goakshit/sauron/internal/persistence"
-	"github.com/goakshit/sauron/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
 
-func TestCreateUserSuccess(t *testing.T) {
+func TestServiceCreateUser_Success(t *testing.T) {
 
-	mockRepo := persistence.GetGormMock()
-	mockRepo.On("Table", mock.Anything).Return(mockRepo)
-	mockRepo.On("Create", mock.Anything).Return(mockRepo)
-	mockRepo.On("Error").Return(nil)
-
+	mockRepo := getUserRepoMock()
+	mockRepo.On("CreateUser", mock.Anything, mock.Anything).Return(nil)
 	svc := NewUserService(mockRepo)
-	err := svc.CreateUser(context.Background(), types.UserDetails{
-		Name:        "u1",
-		Email:       "u1@gmail.com",
-		CreditLimit: 500,
-	})
+	err := svc.CreateUser(context.Background(), []string{"u1", "u1@gmail.com", "500"})
 	assert.Nil(t, err)
 	mockRepo.AssertExpectations(t)
 }
 
-func TestCreateUserInternalServerError(t *testing.T) {
+func TestServiceCreateUser_InvalidArgs(t *testing.T) {
 
-	err := errors.New("Something went wrong")
-
-	mockRepo := persistence.GetGormMock()
-	mockRepo.On("Table", mock.Anything).Return(mockRepo)
-	mockRepo.On("Create", mock.Anything).Return(mockRepo)
-	mockRepo.On("Error").Return(err)
-
+	mockRepo := getUserRepoMock()
+	mockRepo.On("CreateUser", mock.Anything, mock.Anything).Return(nil)
 	svc := NewUserService(mockRepo)
-	createUserErr := svc.CreateUser(context.Background(), types.UserDetails{
-		Name:        "u1",
-		Email:       "u1@gmail.com",
-		CreditLimit: 500,
-	})
-	assert.Errorf(t, err, createUserErr.Error())
-	mockRepo.AssertExpectations(t)
+	err := svc.CreateUser(context.Background(), []string{})
+	assert.EqualError(t, err, constants.CreateUserInvalidParamsErr)
+	mockRepo.AssertNotCalled(t, "CreateUser", mock.Anything, mock.Anything)
 }
 
-func TestUpdateUserCreditLimitSuccess(t *testing.T) {
+func TestServiceCreateUser_InvalidCreditLimit(t *testing.T) {
 
-	mockRepo := persistence.GetGormMock()
-	mockRepo.On("Table", mock.Anything).Return(mockRepo)
-	mockRepo.On("Where", mock.Anything, mock.Anything).Return(mockRepo)
-	mockRepo.On("UpdateColumn", mock.Anything, mock.Anything).Return(mockRepo)
-	mockRepo.On("Error").Return(nil)
-	mockRepo.On("RowsAffected").Return(int64(1))
-
+	mockRepo := getUserRepoMock()
+	mockRepo.On("CreateUser", mock.Anything, mock.Anything).Return(nil)
 	svc := NewUserService(mockRepo)
-	err := svc.UpdateUserCreditLimit(context.Background(), "u1", 600)
+	err := svc.CreateUser(context.Background(), []string{"u1", "u1@gmail.com", "hundred"})
+	assert.EqualError(t, err, constants.CreateUserInvalidCreditLimitErr)
+	mockRepo.AssertNotCalled(t, "CreateUser", mock.Anything, mock.Anything)
+}
+
+func TestServiceCreateUser_CreditLimitLessThan0(t *testing.T) {
+
+	mockRepo := getUserRepoMock()
+	mockRepo.On("CreateUser", mock.Anything, mock.Anything).Return(nil)
+	svc := NewUserService(mockRepo)
+	err := svc.CreateUser(context.Background(), []string{"u1", "u1@gmail.com", "-1"})
+	assert.EqualError(t, err, constants.CreateUserInvalidCreditLimitErr)
+	mockRepo.AssertNotCalled(t, "CreateUser", mock.Anything, mock.Anything)
+}
+
+func TestServiceUpdateUserCreditLimit_Success(t *testing.T) {
+
+	mockRepo := getUserRepoMock()
+	mockRepo.On("UpdateUserCreditLimit", mock.Anything, mock.Anything, mock.Anything).Return(nil)
+	svc := NewUserService(mockRepo)
+	err := svc.UpdateUserCreditLimit(context.Background(), []string{"u1", "500"})
 	assert.Nil(t, err)
 	mockRepo.AssertExpectations(t)
 }
 
-func TestUpdateUserCreditLimit_UserDoesNotExist(t *testing.T) {
+func TestServiceUpdateUserCreditLimit_InvalidArgs(t *testing.T) {
 
-	mockRepo := persistence.GetGormMock()
-	mockRepo.On("Table", mock.Anything).Return(mockRepo)
-	mockRepo.On("Where", mock.Anything, mock.Anything).Return(mockRepo)
-	mockRepo.On("UpdateColumn", mock.Anything, mock.Anything).Return(mockRepo)
-	mockRepo.On("Error").Return(nil)
-	mockRepo.On("RowsAffected").Return(int64(0))
-
+	mockRepo := getUserRepoMock()
+	mockRepo.On("UpdateUserCreditLimit", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 	svc := NewUserService(mockRepo)
-	err := svc.UpdateUserCreditLimit(context.Background(), "u1", 600)
-	assert.NotNil(t, err)
-	assert.EqualError(t, err, constants.UpdateUserNotFoundErr)
-	mockRepo.AssertExpectations(t)
+	err := svc.UpdateUserCreditLimit(context.Background(), []string{})
+	assert.EqualError(t, err, constants.UpdateUserInvalidParamsErr)
+	mockRepo.AssertNotCalled(t, "UpdateUserCreditLimit", mock.Anything, mock.Anything, mock.Anything)
 }
 
-func TestUpdateUserCreditLimit_InternalServerErr(t *testing.T) {
+func TestServiceUpdateUserCreditLimit_InvalidCreditLimit(t *testing.T) {
 
-	mockErr := errors.New("Something went wrong. Internal server error.")
-
-	mockRepo := persistence.GetGormMock()
-	mockRepo.On("Table", mock.Anything).Return(mockRepo)
-	mockRepo.On("Where", mock.Anything, mock.Anything).Return(mockRepo)
-	mockRepo.On("UpdateColumn", mock.Anything, mock.Anything).Return(mockRepo)
-	mockRepo.On("Error").Return(mockErr)
-
+	mockRepo := getUserRepoMock()
+	mockRepo.On("UpdateUserCreditLimit", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 	svc := NewUserService(mockRepo)
-	err := svc.UpdateUserCreditLimit(context.Background(), "u1", 600)
-	assert.NotNil(t, err)
-	assert.EqualError(t, err, mockErr.Error())
-	mockRepo.AssertExpectations(t)
-}
-
-func TestUpdateUserCreditLimit_UserNameIsEmpty(t *testing.T) {
-
-	mockRepo := persistence.GetGormMock()
-
-	svc := NewUserService(mockRepo)
-	err := svc.UpdateUserCreditLimit(context.Background(), "", 600)
-	assert.NotNil(t, err)
-	assert.EqualError(t, err, constants.UpdateUserNameMissingErr)
-}
-
-func TestUpdateUserCreditLimit_InvalidCreditLimit(t *testing.T) {
-
-	mockRepo := persistence.GetGormMock()
-
-	svc := NewUserService(mockRepo)
-	err := svc.UpdateUserCreditLimit(context.Background(), "u1", -150)
-	assert.NotNil(t, err)
+	err := svc.UpdateUserCreditLimit(context.Background(), []string{"u1", "abc"})
 	assert.EqualError(t, err, constants.UpdateUserInvalidCreditLimitErr)
+	mockRepo.AssertNotCalled(t, "UpdateUserCreditLimit", mock.Anything, mock.Anything, mock.Anything)
+}
+
+func TestServiceUpdateUserCreditLimit_CreditLimitLessThan0(t *testing.T) {
+
+	mockRepo := getUserRepoMock()
+	mockRepo.On("UpdateUserCreditLimit", mock.Anything, mock.Anything, mock.Anything).Return(nil)
+	svc := NewUserService(mockRepo)
+	err := svc.UpdateUserCreditLimit(context.Background(), []string{"u1", "-100"})
+	assert.EqualError(t, err, constants.UpdateUserInvalidCreditLimitErr)
+	mockRepo.AssertNotCalled(t, "UpdateUserCreditLimit", mock.Anything, mock.Anything, mock.Anything)
+}
+
+func TestServiceUpdateUserCreditLimit_EmptyName(t *testing.T) {
+
+	mockRepo := getUserRepoMock()
+	mockRepo.On("UpdateUserCreditLimit", mock.Anything, mock.Anything, mock.Anything).Return(nil)
+	svc := NewUserService(mockRepo)
+	err := svc.UpdateUserCreditLimit(context.Background(), []string{"", "500"})
+	assert.EqualError(t, err, constants.UpdateUserNameMissingErr)
+	mockRepo.AssertNotCalled(t, "UpdateUserCreditLimit", mock.Anything, mock.Anything, mock.Anything)
 }
