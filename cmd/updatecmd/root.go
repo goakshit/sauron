@@ -26,6 +26,8 @@ func init() {
 }
 
 func addSubCmd() {
-	// Adds merchant command
-	updateCmd.AddCommand(getMerchantCmd())
+	updateCmd.AddCommand(
+		getMerchantCmd(),
+		getUserCmd(),
+	)
 }

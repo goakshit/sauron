@@ -1,6 +1,9 @@
 package constants
 
 const (
+
+	// Create Merchant
+
 	CreateMerchantInvalidParamsErr = "Invalid number of params passed for create merchant call"
 
 	CreateMerchantPercErr = "Invalid percentage passed for create merchant"
@@ -8,6 +11,8 @@ const (
 	CreateMerchantDuplicateIDErr = "Duplicate merchant id passed. Kindly pass a unique id"
 
 	CreateMerchantDuplicateEmailErr = "Duplicate merchant email passed. Kindly pass a unique email"
+
+	// Update Merchant
 
 	UpdateMerchantInvalidDiscountErr = "Invalid discount passed for update."
 
@@ -19,6 +24,8 @@ const (
 
 	UpdateMerchantNotFoundErr = "Merchant with given name not found in database."
 
+	// Create User
+
 	CreateUserInvalidParamsErr = "Invalid number of params passed for create user call"
 
 	CreateUserInvalidCreditLimitErr = "Invalid(or unparsable) credit limit passed for create user call"
@@ -26,6 +33,18 @@ const (
 	CreateUserDuplicateIDErr = "Duplicate user id passed. Kindly pass a unique id"
 
 	CreateUserDuplicateEmailErr = "Duplicate user email passed. Kindly pass a unique email"
+
+	// Update User
+
+	UpdateUserNameMissingErr = "Name cannot be empty for update user credit call"
+
+	UpdateUserInvalidCreditLimitErr = "Credit limit is invalid(or unparsable)"
+
+	UpdateUserNotFoundErr = "User with given name not found in database."
+
+	UpdateUserInvalidParamsErr = "Invalid number of params passed for update user call"
+
+	// Create Txn
 
 	CreateTxnUserDoesNotExistErr = "User with id passed doesn't exist in database"
 
@@ -40,6 +59,8 @@ const (
 	CreateTxnMerchantNotFoundErr = "Merchant with id passed not found"
 
 	CreateTxnInvalidParamsErr = "Invalid number of params passed for create txn call"
+
+	// Create Payback
 
 	CreatePaybackInvalidAmountErr = "The payback amount is invalid(or unparsable)"
 
