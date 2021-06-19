@@ -13,7 +13,7 @@ type transactionMock struct {
 
 // GetTransactionMock - Returns service mock
 // Mocks repository interface
-func getTransactionMock() *transactionMock {
+func GetTransactionMock() *transactionMock {
 	return &transactionMock{}
 }
 

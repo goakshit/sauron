@@ -3,12 +3,10 @@ package paybackcmd
 import (
 	"context"
 	"fmt"
-	"strconv"
 
-	"github.com/goakshit/sauron/internal/constants"
 	"github.com/goakshit/sauron/internal/persistence"
 	"github.com/goakshit/sauron/internal/svc/payback"
-	"github.com/goakshit/sauron/internal/types"
+	"github.com/goakshit/sauron/internal/svc/transaction"
 	"github.com/spf13/cobra"
 )
 
@@ -26,36 +24,13 @@ func GetPaybackCmd() *cobra.Command {
 // createPayback - creates payback for an user from data passed
 func createPayback(args []string) {
 
-	var (
-		err            error
-		paybackDetails types.PaybackDetails
-	)
-
-	// Road block ahead, I mean validations
-	if len(args) != 2 {
-		fmt.Println(constants.CreatePaybackInvalidParamsErr)
-		return
-	}
-
-	paybackAmount, err := strconv.ParseFloat(args[1], 64)
-	if err != nil {
-		fmt.Println(constants.CreatePaybackInvalidAmountErr)
-		return
-	}
-
-	if paybackAmount <= 0 {
-		fmt.Println(constants.CreatePaybackInvalidAmountErr)
-		return
-	}
-
-	paybackDetails.UserName = args[0]
-	paybackDetails.Amount = paybackAmount
-
-	paybackSVC := payback.NewPaybackService(persistence.GetGormClient())
-	err = paybackSVC.CreatePayback(context.Background(), paybackDetails)
+	paybackRepo := payback.NewRepository(persistence.GetGormClient())
+	txnRepo := transaction.NewRepository(persistence.GetGormClient())
+	paybackSVC := payback.NewPaybackService(paybackRepo, txnRepo)
+	err := paybackSVC.CreatePayback(context.Background(), args)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	fmt.Println("Successfully added new payback")
+	fmt.Println("Successfully added payback")
 }

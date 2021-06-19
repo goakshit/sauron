@@ -12,7 +12,7 @@ import (
 )
 
 func TestCreateTransaction_Success(t *testing.T) {
-	txnRepoMock := getTransactionMock()
+	txnRepoMock := GetTransactionMock()
 	txnRepoMock.On("GetUserDetails", mock.Anything, mock.Anything).Return(types.UserDetails{
 		Name:        "u1",
 		Email:       "u1@gmail.com",
@@ -38,7 +38,7 @@ func TestCreateTransaction_Success(t *testing.T) {
 }
 
 func TestCreateTransaction_UserNotFound(t *testing.T) {
-	txnRepoMock := getTransactionMock()
+	txnRepoMock := GetTransactionMock()
 	txnRepoMock.On("GetUserDetails", mock.Anything, mock.Anything).Return(types.UserDetails{}, errors.New(constants.CreateTxnUserDoesNotExistErr))
 	txnRepoMock.On("GetMerchantDetails", mock.Anything, mock.Anything).Return(types.MerchantDetails{
 		Name:  "m1",
@@ -61,7 +61,7 @@ func TestCreateTransaction_UserNotFound(t *testing.T) {
 }
 
 func TestCreateTransaction_MerchantNotFound(t *testing.T) {
-	txnRepoMock := getTransactionMock()
+	txnRepoMock := GetTransactionMock()
 	txnRepoMock.On("GetUserDetails", mock.Anything, mock.Anything).Return(types.UserDetails{
 		Name:        "u1",
 		Email:       "u1@gmail.com",
@@ -84,7 +84,7 @@ func TestCreateTransaction_MerchantNotFound(t *testing.T) {
 }
 
 func TestCreateTransaction_CreditLimitExceeded(t *testing.T) {
-	txnRepoMock := getTransactionMock()
+	txnRepoMock := GetTransactionMock()
 	txnRepoMock.On("GetUserDetails", mock.Anything, mock.Anything).Return(types.UserDetails{
 		Name:        "u1",
 		Email:       "u1@gmail.com",
@@ -111,7 +111,7 @@ func TestCreateTransaction_CreditLimitExceeded(t *testing.T) {
 }
 
 func TestCreateTransaction_CreateTxnFailed(t *testing.T) {
-	txnRepoMock := getTransactionMock()
+	txnRepoMock := GetTransactionMock()
 	txnRepoMock.On("GetUserDetails", mock.Anything, mock.Anything).Return(types.UserDetails{
 		Name:        "u1",
 		Email:       "u1@gmail.com",
@@ -137,7 +137,7 @@ func TestCreateTransaction_CreateTxnFailed(t *testing.T) {
 }
 
 func TestCreateTransaction_UpdateUserDueAmountFailed(t *testing.T) {
-	txnRepoMock := getTransactionMock()
+	txnRepoMock := GetTransactionMock()
 	txnRepoMock.On("GetUserDetails", mock.Anything, mock.Anything).Return(types.UserDetails{
 		Name:        "u1",
 		Email:       "u1@gmail.com",

@@ -3,45 +3,62 @@ package payback
 import (
 	"context"
 	"errors"
+	"strconv"
 
 	"github.com/goakshit/sauron/internal/constants"
-	"github.com/goakshit/sauron/internal/persistence"
+	"github.com/goakshit/sauron/internal/svc/transaction"
 	"github.com/goakshit/sauron/internal/types"
-	"gorm.io/gorm"
 )
 
 type Service interface {
-	CreatePayback(ctx context.Context, data types.PaybackDetails) error
+	CreatePayback(ctx context.Context, args []string) error
 }
 
 type service struct {
-	db persistence.DBIface
+	pr Repository
+	tr transaction.Repository
 }
 
-func NewPaybackService(db persistence.DBIface) Service {
+func NewPaybackService(pr Repository, tr transaction.Repository) Service {
 	return &service{
-		db: db,
+		pr: pr,
+		tr: tr,
 	}
 }
 
 // CreatePayback - Checks if user has due amount & if yes, then creates payback and updates the due
 // amount - payback amount in user table also
-func (s *service) CreatePayback(ctx context.Context, data types.PaybackDetails) error {
+func (s *service) CreatePayback(ctx context.Context, args []string) error {
 
 	var (
-		userDetails types.UserDetails
+		paybackDetails types.PaybackDetails
+		userDetails    types.UserDetails
 	)
 
-	if data.Amount <= 0 {
+	if len(args) != 2 {
+		return errors.New(constants.CreatePaybackInvalidParamsErr)
+	}
+
+	name := args[0]
+	if len(name) == 0 {
+		return errors.New(constants.CreatePaybackUserNotFoundErr)
+	}
+
+	paybackAmount, err := strconv.ParseFloat(args[1], 64)
+	if err != nil {
 		return errors.New(constants.CreatePaybackInvalidAmountErr)
 	}
 
-	err := s.db.Table("user").Where("name = ?", data.UserName).First(&userDetails).Error()
+	if paybackAmount <= 0 {
+		return errors.New(constants.CreatePaybackInvalidAmountErr)
+	}
+
+	paybackDetails.UserName = name
+	paybackDetails.Amount = paybackAmount
+
+	userDetails, err = s.tr.GetUserDetails(ctx, name)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return errors.New(constants.CreatePaybackUserNotFoundErr)
-		}
-		return errors.New(constants.CreatePaybackGetDueAmountErr)
+		return err
 	}
 
 	if userDetails.DueAmount == 0 {
@@ -49,14 +66,15 @@ func (s *service) CreatePayback(ctx context.Context, data types.PaybackDetails) 
 	}
 
 	// You can packback only the amount that is due.
-	if data.Amount > userDetails.DueAmount {
-		data.Amount = userDetails.DueAmount
+	if paybackAmount > userDetails.DueAmount {
+		paybackAmount = userDetails.DueAmount
 	}
 
-	if err = s.db.Table("payback").Create(&data).Error(); err == nil {
+	if err = s.pr.CreatePayback(ctx, paybackDetails); err == nil {
 		// Update updated due amount in user table
-		return s.db.Table("user").Where("name = ?", data.UserName).
-			UpdateColumn("due_amount", userDetails.DueAmount-data.Amount).Error()
+		return s.pr.UpdateUser(ctx, name, map[string]interface{}{
+			"due_amount": userDetails.DueAmount - paybackAmount,
+		})
 	}
 	return err
 }
