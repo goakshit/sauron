@@ -26,3 +26,8 @@ type PaybackDetails struct {
 	UserName string  `json:"user_name"`
 	Amount   float64 `json:"amount"`
 }
+
+type ReportUserDues struct {
+	Name      string  `json:"name"`
+	DueAmount float64 `json:"due_amount"`
+}

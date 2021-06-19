@@ -77,4 +77,8 @@ const (
 	ReportUACLGetUsersErr = "Failed to fetch users at credit limit. Try again after sometime."
 
 	ReportUACLNoRecordsErr = "There are no users at credit limit."
+
+	ReportUserDuesGetUsersErr = "Failed to fetch users with pending dues. Try again after sometime."
+
+	ReportUserDuesNoRecordsErr = "There are no users with pending dues."
 )
