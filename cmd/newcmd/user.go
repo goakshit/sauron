@@ -33,6 +33,8 @@ func createUser(args []string) {
 			fmt.Println(constants.CreateUserDuplicateIDErr)
 		case "ERROR: duplicate key value violates unique constraint \"user_email_unique\" (SQLSTATE 23505)":
 			fmt.Println(constants.CreateUserDuplicateEmailErr)
+		default:
+			fmt.Println(err.Error())
 		}
 		return
 	}

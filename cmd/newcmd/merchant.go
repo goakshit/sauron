@@ -33,6 +33,8 @@ func createMerchant(args []string) {
 			fmt.Println(constants.CreateMerchantDuplicateIDErr)
 		case "ERROR: duplicate key value violates unique constraint \"merchant_email_unique\" (SQLSTATE 23505)":
 			fmt.Println(constants.CreateMerchantDuplicateEmailErr)
+		default:
+			fmt.Println(err.Error())
 		}
 		return
 	}

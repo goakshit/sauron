@@ -28,8 +28,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "sauron",
 	Short: "Sauron's eye sees everything",
-	Long:  "",
-	// Run:   func(cmd *cobra.Command, args []string) {},
+	Long:  "Sauron imitates a simple buy now, pay later module.",
 }
 
 func Execute() {
