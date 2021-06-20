@@ -24,7 +24,7 @@ func init() {
 func addSubCmd() {
 	reportCmd.AddCommand(
 		getUsersAtCreditLimitCmd(),
-		getUsersDuesCmd(),
+		getTotalDuesCmd(),
 		getUserDueCmd(),
 		getMerchantDiscountCmd(),
 	)

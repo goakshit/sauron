@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func getUsersDuesCmd() *cobra.Command {
+func getTotalDuesCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "total-dues",
 		Short: "Gets all users that have pending dues",
