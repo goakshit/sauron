@@ -10,24 +10,24 @@ import (
 	"gorm.io/gorm"
 )
 
-type Service interface {
+type Repository interface {
 	GetUsersAtCreditLimit(ctx context.Context) ([]string, error)
 	GetUserDues(ctx context.Context, name string) (float64, error)
 	GetTotalDues(ctx context.Context) ([]types.ReportUserDues, error)
 	GetMerchantDiscount(ctx context.Context, name string) (float64, error)
 }
 
-type service struct {
+type repository struct {
 	db persistence.DBIface
 }
 
-func NewReportService(db persistence.DBIface) Service {
-	return &service{
+func NewRepository(db persistence.DBIface) Repository {
+	return &repository{
 		db: db,
 	}
 }
 
-func (s *service) GetUsersAtCreditLimit(ctx context.Context) ([]string, error) {
+func (s *repository) GetUsersAtCreditLimit(ctx context.Context) ([]string, error) {
 
 	users := []string{}
 	err := s.db.Table("user").Select("name").Where("due_amount = credit_limit").Find(&users).Error()
@@ -37,7 +37,7 @@ func (s *service) GetUsersAtCreditLimit(ctx context.Context) ([]string, error) {
 	return users, nil
 }
 
-func (s *service) GetTotalDues(ctx context.Context) ([]types.ReportUserDues, error) {
+func (s *repository) GetTotalDues(ctx context.Context) ([]types.ReportUserDues, error) {
 
 	users := []types.ReportUserDues{}
 	err := s.db.Table("user").Where("due_amount > 0").Find(&users).Error()
@@ -47,7 +47,7 @@ func (s *service) GetTotalDues(ctx context.Context) ([]types.ReportUserDues, err
 	return users, nil
 }
 
-func (s *service) GetUserDues(ctx context.Context, name string) (float64, error) {
+func (s *repository) GetUserDues(ctx context.Context, name string) (float64, error) {
 
 	user := types.ReportUserDues{}
 	err := s.db.Table("user").Where("name = ?", name).First(&user).Error()
@@ -60,7 +60,7 @@ func (s *service) GetUserDues(ctx context.Context, name string) (float64, error)
 	return user.DueAmount, nil
 }
 
-func (s *service) GetMerchantDiscount(ctx context.Context, name string) (float64, error) {
+func (s *repository) GetMerchantDiscount(ctx context.Context, name string) (float64, error) {
 
 	txns := []types.ReportMerchantTxn{}
 	err := s.db.Table("transaction").Where("merchant_name = ?", name).Find(&txns).Error()

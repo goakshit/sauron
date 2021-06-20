@@ -29,8 +29,8 @@ func generateMerchantDiscountReport(args []string) {
 		return
 	}
 
-	reportSVC := report.NewReportService(persistence.GetGormClient())
-	discount, err := reportSVC.GetMerchantDiscount(context.Background(), args[0])
+	reportRepo := report.NewRepository(persistence.GetGormClient())
+	discount, err := reportRepo.GetMerchantDiscount(context.Background(), args[0])
 	if err != nil {
 		fmt.Println(err.Error())
 		return

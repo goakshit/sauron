@@ -24,8 +24,8 @@ func getUsersAtCreditLimitCmd() *cobra.Command {
 // generateUsersAtCreditLimitReport - generates users at credit limit report
 func generateUsersAtCreditLimitReport(args []string) {
 
-	reportSVC := report.NewReportService(persistence.GetGormClient())
-	users, err := reportSVC.GetUsersAtCreditLimit(context.Background())
+	reportRepo := report.NewRepository(persistence.GetGormClient())
+	users, err := reportRepo.GetUsersAtCreditLimit(context.Background())
 	if err != nil {
 		fmt.Println(err.Error())
 		return

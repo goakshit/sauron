@@ -24,8 +24,8 @@ func getUsersDuesCmd() *cobra.Command {
 // generateUsersDuesReport - generates users with pending dues report
 func generateUsersDuesReport(args []string) {
 
-	reportSVC := report.NewReportService(persistence.GetGormClient())
-	users, err := reportSVC.GetTotalDues(context.Background())
+	reportRepo := report.NewRepository(persistence.GetGormClient())
+	users, err := reportRepo.GetTotalDues(context.Background())
 	if err != nil {
 		fmt.Println(err.Error())
 		return

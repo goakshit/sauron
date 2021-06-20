@@ -29,8 +29,8 @@ func generateUserPendingDueReport(args []string) {
 		return
 	}
 
-	reportSVC := report.NewReportService(persistence.GetGormClient())
-	dueAmount, err := reportSVC.GetUserDues(context.Background(), args[0])
+	reportRepo := report.NewRepository(persistence.GetGormClient())
+	dueAmount, err := reportRepo.GetUserDues(context.Background(), args[0])
 	if err != nil {
 		fmt.Println(err.Error())
 		return
