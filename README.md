@@ -4,7 +4,7 @@ A simpl buy now, pay later implementation.
 #### Build
 ```
 git clone git@github.com:goakshitsauron.gi
-cdsauro
+cd sauron
 
 -- Database
 Create database 'sdb'
